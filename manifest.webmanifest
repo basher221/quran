@@ -1,0 +1,19 @@
+{
+  "name": "قرائة القرآن الكريم",
+  "short_name": "القرآن",
+  "description": "تطبيق لقراءة واستماع القرآن الكريم مع دعم الاستخدام بدون إنترنت.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f1014",
+  "theme_color": "#8d1f2d",
+  "icons": [
+    {
+      "src": "./assets/logo.png",
+      "purpose": "any maskable"
+    }
+  ]
+}

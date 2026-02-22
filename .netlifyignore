@@ -1,0 +1,10 @@
+android/
+node_modules/
+.git/
+.cursor/
+*.apk
+*.aab
+*.dex
+capacitor.config.ts
+package-lock.json
+ANDROID_BUILD.md

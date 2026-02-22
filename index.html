@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#8d1f2d" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="القرآن الكريم" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self' https://api.alquran.cloud https://everyayah.com https://raw.githubusercontent.com; media-src 'self' https://everyayah.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+    />
+    <title>قرائة القرآن الكريم</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./assets/logo.png" />
+    <link rel="apple-touch-icon" href="./assets/logo.png" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="ramadanDecor" class="ramadan-decor hidden" aria-hidden="true">
+      <div class="ramadan-glow"></div>
+      <div class="ramadan-fanous fanous-1">
+        <span class="fanous-body"></span>
+      </div>
+      <div class="ramadan-fanous fanous-2">
+        <span class="fanous-body"></span>
+      </div>
+      <div class="ramadan-fanous fanous-3">
+        <span class="fanous-body"></span>
+      </div>
+      <div class="ramadan-stars"></div>
+    </div>
+
+    <main class="app-shell">
+      <section id="homeView" class="view active">
+        <header class="read-header">
+          <h1 class="title small">قرائة القرآن الكريم</h1>
+          <button id="homeSettingsBtn" class="icon-btn" aria-label="الإعدادات">⚙</button>
+        </header>
+        <p class="home-greeting">كل عام وانتم بخير رمضان مبارك على الجميع</p>
+
+        <div class="home-main">
+          <div class="center-logo">
+            <img src="./assets/logo.png" alt="شعار القرآن الكريم" class="logo-image" />
+          </div>
+          
+
+          <div class="home-actions">
+            <button id="readListenBtn" class="btn primary">قرائة واستماع</button>
+            <button id="readBtn" class="btn secondary">قرائة</button>
+            <button id="ramadanBtn" class="btn secondary">الختمه في رمضان</button>
+          </div>
+        </div>
+        <div class="quran-source-inline" aria-label="مصدر القرآن الكريم">
+          <span>مصدر القرآن الكريم: مجمع الملك فهد لطباعة المصحف الشريف</span>
+        </div>
+      </section>
+
+      <section id="readView" class="view">
+        <header class="read-header">
+          <h2 class="title small">قرائة القرآن الكريم</h2>
+          <button id="readSettingsBtn" class="icon-btn" aria-label="الإعدادات">⚙</button>
+        </header>
+
+        <div class="reader-wrapper">
+          <div id="readStatusText" class="status-text">جاري تحميل الآيات...</div>
+          <div id="readReaderArea" class="reader-area hidden">
+            <div id="readAyahList" class="ayah-list"></div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="readStartBtn" class="btn primary">ابدأ</button>
+          <button id="readStopBtn" class="btn danger hidden">إيقاف</button>
+          <button id="readContinueBtn" class="btn success hidden">استمرار</button>
+          <button id="readResetBtn" class="btn outline hidden">إعادة تعيين</button>
+        </div>
+
+        <button id="backHomeFromReadBtn" class="back-link">الرجوع للرئيسية</button>
+        <div class="quran-source-inline" aria-label="مصدر القرآن الكريم">
+          <span>مصدر القرآن الكريم: مجمع الملك فهد لطباعة المصحف الشريف</span>
+        </div>
+      </section>
+
+      <section id="listenView" class="view">
+        <header class="read-header">
+          <h2 class="title small">قرائة واستماع القرآن الكريم</h2>
+          <button id="listenSettingsBtn" class="icon-btn" aria-label="الإعدادات">⚙</button>
+        </header>
+
+        <div class="listen-top-row">
+          <div id="recitationModeBadge" class="mode-badge">نمط القراءة: آية-آية</div>
+        </div>
+
+        <div class="reader-wrapper">
+          <div id="listenStatusText" class="status-text">جاري تحميل الآيات...</div>
+          <div id="listenReaderArea" class="reader-area hidden">
+            <div id="listenAyahList" class="ayah-list"></div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="listenStartBtn" class="btn primary">ابدأ</button>
+          <button id="listenStopBtn" class="btn danger hidden">إيقاف</button>
+          <button id="listenContinueBtn" class="btn success hidden">استمرار</button>
+          <button id="listenResetBtn" class="btn outline hidden">إعادة تعيين</button>
+        </div>
+
+        <button id="backHomeFromListenBtn" class="back-link">الرجوع للرئيسية</button>
+        <div class="quran-source-inline" aria-label="مصدر القرآن الكريم">
+          <span>مصدر القرآن الكريم: مجمع الملك فهد لطباعة المصحف الشريف</span>
+        </div>
+      </section>
+
+      <section id="ramadanView" class="view">
+        <header class="read-header">
+          <h2 class="title small">اختم في رمضان</h2>
+          <button id="ramadanSettingsBtn" class="icon-btn" aria-label="الإعدادات">⚙</button>
+        </header>
+
+        <div class="ramadan-info-wrap">
+          <div id="ramadanInfoBadge" class="mode-badge">خطة الجزء اليومي في رمضان</div>
+          <div id="ramadanStatusText" class="status-text">جاري تجهيز خطة رمضان...</div>
+        </div>
+
+        <div class="reader-wrapper">
+          <div id="ramadanReaderArea" class="reader-area hidden">
+            <div id="ramadanAyahList" class="ayah-list"></div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="ramadanStartBtn" class="btn primary">ابدأ</button>
+          <button id="ramadanStopBtn" class="btn danger hidden">إيقاف</button>
+          <button id="ramadanContinueBtn" class="btn success hidden">استمرار</button>
+          <button id="ramadanResetBtn" class="btn outline hidden">إعادة تعيين</button>
+          <button id="ramadanNextJuzBtn" class="btn secondary hidden">انتقل للجزء التالي</button>
+        </div>
+
+        <button id="backHomeFromRamadanBtn" class="back-link">الرجوع للرئيسية</button>
+        <div class="quran-source-inline" aria-label="مصدر القرآن الكريم">
+          <span>مصدر القرآن الكريم: مجمع الملك فهد لطباعة المصحف الشريف</span>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="settingsDialog" class="settings-dialog">
+      <form method="dialog" class="settings-content">
+        <h3>الإعدادات</h3>
+        <div id="settingsToastContainer" class="settings-toast-container" aria-live="polite"></div>
+
+        <label id="speedSettingRow" class="setting-row">
+          <span>سرعة الحركة</span>
+          <input id="speedRange" type="range" min="10" max="80" value="28" />
+        </label>
+
+        <label id="fontSettingRow" class="setting-row">
+          <span>حجم الخط</span>
+          <input id="fontRange" type="range" min="20" max="40" value="28" />
+        </label>
+
+        <label id="readSurahSettingRow" class="setting-row hidden">
+          <span>سورة البداية (صفحة القراءة)</span>
+          <select id="readSurahSelect" class="settings-select">
+            <option value="">من البداية</option>
+          </select>
+        </label>
+
+        <label id="readAyahSettingRow" class="setting-row hidden">
+          <span>رقم الآية (صفحة القراءة)</span>
+          <input
+            id="readAyahInput"
+            class="ayah-input"
+            type="number"
+            min="1"
+            inputmode="numeric"
+            placeholder="1"
+          />
+        </label>
+
+        <label class="setting-row">
+          <span>اختيار الوضع</span>
+          <select id="themeModeSelect" class="settings-select">
+            <option value="normal">الوضع العادي</option>
+            <option value="night">الوضع الليلي</option>
+            <option value="auto">الوضع التلقائي (حسب الجهاز)</option>
+          </select>
+        </label>
+
+        <label id="recitationModeSettingRow" class="setting-row">
+          <span>نمط القراءة والاستماع</span>
+          <select id="recitationModeSelect" class="settings-select">
+            <option value="ayah">آية-آية</option>
+            <option value="surah">سورة كاملة</option>
+          </select>
+        </label>
+
+        <section id="listenSelectionsSettingsSection" class="hidden">
+          <label class="setting-row">
+            <span>السورة (قراءة واستماع)</span>
+            <select id="listenSurahSelect" class="settings-select">
+              <option value="">من البداية</option>
+            </select>
+          </label>
+
+          <label class="setting-row">
+            <span>رقم الآية (قراءة واستماع)</span>
+            <input
+              id="listenAyahInput"
+              class="ayah-input"
+              type="number"
+              min="1"
+              inputmode="numeric"
+              placeholder="1"
+            />
+            <select id="listenAyahSelectOffline" class="settings-select hidden" aria-label="الآيات المحفوظة"></select>
+          </label>
+
+          <label class="setting-row">
+            <span>القارئ (قراءة واستماع)</span>
+            <select id="reciterSelect" class="settings-select">
+              <option value="Yasser_Ad-Dussary_128kbps">الشيخ ياسر الدوسري</option>
+              <option value="MaherAlMuaiqly128kbps">الشيخ ماهر العقيلي</option>
+            </select>
+          </label>
+        </section>
+
+        <section id="offlineSettingsSection" class="offline-settings">
+          <h4>الاستخدام بدون إنترنت</h4>
+
+          <div class="setting-row">
+            <span>تنزيل القرآن الكريم</span>
+            <button id="downloadQuranBtn" type="button" class="btn outline settings-action-btn">
+              تحميل القرآن
+            </button>
+          </div>
+
+          <div id="reciterOfflineSettingRow" class="setting-row">
+            <span>تنزيل تلاوة القارئ</span>
+            <label class="offline-range-field" for="offlineReciterSelect">
+              <select id="offlineReciterSelect" class="settings-select">
+                <option value="Yasser_Ad-Dussary_128kbps">الشيخ ياسر الدوسري</option>
+                <option value="MaherAlMuaiqly128kbps">الشيخ ماهر العقيلي</option>
+              </select>
+            </label>
+            <div class="offline-range-row">
+              <label class="offline-range-field" for="offlineStartSurahSelect">
+                <select id="offlineStartSurahSelect" class="settings-select"></select>
+              </label>
+              <label class="offline-range-field" for="offlineEndSurahSelect">
+                <select id="offlineEndSurahSelect" class="settings-select"></select>
+              </label>
+            </div>
+            <button id="downloadReciterBtn" type="button" class="btn outline settings-action-btn">
+              تحميل القارئ المختار
+            </button>
+          </div>
+
+          <div id="downloadProgressBox" class="download-progress-box hidden" aria-live="polite">
+            <div class="download-progress-top">
+              <strong id="downloadProgressTitle">حالة التنزيل</strong>
+              <span id="downloadProgressPercent">0%</span>
+            </div>
+            <progress id="downloadProgressBar" max="100" value="0"></progress>
+            <small id="downloadProgressMeta" class="download-progress-meta">في انتظار البدء...</small>
+          </div>
+
+          <div class="setting-row">
+            <span>إدارة التخزين</span>
+            <button id="openStorageManagerBtn" type="button" class="btn danger settings-action-btn">
+              حذف بيانات محفوظة
+            </button>
+            <button id="openOfflineLogBtn" type="button" class="btn secondary settings-action-btn">
+              سجل البيانات المحفوظة
+            </button>
+          </div>
+
+          <p id="offlineDownloadStatus" class="offline-download-status hidden" aria-live="polite"></p>
+        </section>
+
+        <div class="dialog-actions">
+          <button value="cancel" class="btn secondary">إغلاق</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="storageManagerDialog" class="settings-dialog">
+      <form method="dialog" class="settings-content">
+        <h3>البيانات المحفوظة</h3>
+
+        <label class="stored-data-row" for="deleteQuranDataChk">
+          <input id="deleteQuranDataChk" type="checkbox" />
+          <div>
+            <strong>نص القرآن المحفوظ</strong>
+            <small id="deleteQuranDataMeta" class="stored-data-meta">غير متوفر</small>
+          </div>
+        </label>
+
+        <label class="stored-data-row" for="deleteReciterDataChk">
+          <input id="deleteReciterDataChk" type="checkbox" />
+          <div>
+            <strong>تلاوات القارئ المحمّلة</strong>
+            <small id="deleteReciterDataMeta" class="stored-data-meta">غير متوفر</small>
+          </div>
+        </label>
+
+        <div class="dialog-actions storage-actions">
+          <button id="deleteSelectedDataBtn" type="button" class="btn danger">حذف المحدد</button>
+          <button value="cancel" class="btn secondary">إغلاق</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="offlineLogDialog" class="settings-dialog">
+      <form method="dialog" class="settings-content">
+        <h3>سجل البيانات المحفوظة</h3>
+
+        <div id="offlineLogSummary" class="offline-log-summary">جاري الفحص...</div>
+
+        <label class="setting-row" for="offlineLogReciterFilter">
+          <span>فلترة حسب القارئ</span>
+          <select id="offlineLogReciterFilter" class="settings-select">
+            <option value="all">كل القُرّاء</option>
+          </select>
+        </label>
+
+        <section class="offline-log-section">
+          <h4>1) القُرّاء المحفوظون</h4>
+          <div id="offlineLogReciters" class="offline-log-content">جاري الفحص...</div>
+        </section>
+
+        <section class="offline-log-section">
+          <h4>2) السور المحفوظة</h4>
+          <div id="offlineLogSurahs" class="offline-log-content">جاري الفحص...</div>
+        </section>
+
+        <section class="offline-log-section">
+          <h4>3) الآيات المحفوظة</h4>
+          <div id="offlineLogAyahs" class="offline-log-content">جاري الفحص...</div>
+        </section>
+
+        <div class="dialog-actions">
+          <button value="cancel" class="btn secondary">إغلاق</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

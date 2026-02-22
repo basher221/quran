@@ -1,0 +1,9 @@
+{
+  "appId": "com.quran.read.listen",
+  "appName": "القرآن الكريم",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}

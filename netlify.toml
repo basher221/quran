@@ -1,0 +1,8 @@
+[build]
+  command = "rm -rf www && mkdir -p www/offline-data && cp index.html styles.css script.js service-worker.js manifest.webmanifest app-icon.svg google43c36c8998e04d90.html www/ && cp offline-data/quran-uthmani.json www/offline-data/ && cp -R offline-data/timings www/offline-data/timings && cp -R assets www/assets"
+  publish = "www"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

@@ -1920,12 +1920,13 @@ function markCurrentJuzCompleted() {
 
 function updateRamadanNextJuzButton() {
   if (!ramadanNextJuzBtn) return;
-  if (state.ramadan.juzCompleted) {
-    ramadanNextJuzBtn.classList.add("hidden");
-    return;
-  }
   const nextJuz = state.ramadan.highestCompletedJuz + 1;
-  const canJumpNow = nextJuz <= state.ramadan.allowedJuzByDate && nextJuz <= 30;
+  const hasCompletedCurrentJuz = state.ramadan.highestCompletedJuz >= state.ramadan.currentJuz;
+  const canJumpNow =
+    hasCompletedCurrentJuz &&
+    state.ramadan.currentJuz < nextJuz &&
+    nextJuz <= state.ramadan.allowedJuzByDate &&
+    nextJuz <= 30;
   ramadanNextJuzBtn.classList.toggle("hidden", !canJumpNow);
   ramadanNextJuzBtn.textContent = `انتقل للجزء ${nextJuz}`;
 }
@@ -1934,6 +1935,7 @@ function updateRamadanInfoAndStatus() {
   if (!ramadanInfoBadge || !ramadanStatusText) return;
   const allowed = state.ramadan.allowedJuzByDate;
   const current = state.ramadan.currentJuz;
+  const hasCompletedCurrentJuz = state.ramadan.highestCompletedJuz >= current;
   if (allowed === 0) {
     ramadanInfoBadge.textContent = "الخطة اليومية تظهر عند دخول رمضان";
     ramadanStatusText.classList.remove("hidden");
@@ -1948,7 +1950,7 @@ function updateRamadanInfoAndStatus() {
     return;
   }
 
-  if (state.ramadan.juzCompleted) {
+  if (hasCompletedCurrentJuz) {
     const nextJuz = state.ramadan.highestCompletedJuz + 1;
     if (nextJuz <= allowed && nextJuz <= 30) {
       ramadanStatusText.classList.remove("hidden");

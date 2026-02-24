@@ -1920,15 +1920,18 @@ function markCurrentJuzCompleted() {
 
 function updateRamadanNextJuzButton() {
   if (!ramadanNextJuzBtn) return;
-  const nextJuz = state.ramadan.highestCompletedJuz + 1;
+  const nextJuzRaw = state.ramadan.highestCompletedJuz + 1;
+  const nextJuz = Math.min(30, nextJuzRaw);
+  const hasNextJuz = nextJuzRaw <= 30;
   const hasCompletedCurrentJuz = state.ramadan.highestCompletedJuz >= state.ramadan.currentJuz;
   const canJumpNow =
+    hasNextJuz &&
     hasCompletedCurrentJuz &&
-    state.ramadan.currentJuz < nextJuz &&
+    state.ramadan.currentJuz !== nextJuz &&
     nextJuz <= state.ramadan.allowedJuzByDate &&
     nextJuz <= 30;
   ramadanNextJuzBtn.classList.toggle("hidden", !canJumpNow);
-  ramadanNextJuzBtn.textContent = `انتقل للجزء ${nextJuz}`;
+  ramadanNextJuzBtn.textContent = hasNextJuz ? `انتقل للجزء ${nextJuz}` : "تم إكمال 30 جزءًا";
 }
 
 function updateRamadanInfoAndStatus() {
@@ -1994,6 +1997,7 @@ function renderRamadanJuz(juzNumber, savedScrollTop = 0) {
   }
 
   ramadanReaderArea.classList.remove("hidden");
+  ramadanReaderArea.scrollTop = Math.max(0, savedScrollTop);
   requestAnimationFrame(() => {
     ramadanReaderArea.scrollTop = Math.max(0, savedScrollTop);
   });
@@ -2093,11 +2097,20 @@ async function openRamadanView() {
 }
 
 function moveToNextRamadanJuz() {
+  stopRamadanScroll();
   const nextJuz = state.ramadan.highestCompletedJuz + 1;
-  if (nextJuz > state.ramadan.allowedJuzByDate || nextJuz > 30) return;
+  if (nextJuz > state.ramadan.allowedJuzByDate || nextJuz > 30) {
+    updateRamadanNextJuzButton();
+    return;
+  }
   state.ramadan.currentJuz = nextJuz;
   state.ramadan.juzCompleted = false;
+  state.ramadan.started = false;
+  if (ramadanReaderArea) ramadanReaderArea.scrollTop = 0;
   renderRamadanJuz(nextJuz, 0);
+  requestAnimationFrame(() => {
+    if (ramadanReaderArea) ramadanReaderArea.scrollTop = 0;
+  });
   updateRamadanControls("initial");
   updateRamadanNextJuzButton();
   updateRamadanInfoAndStatus();

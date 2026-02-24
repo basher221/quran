@@ -1,5 +1,5 @@
-const CACHE_NAME = "quran-offline-v6";
-const USER_DATA_CACHE_NAME = "quran-offline-v2";
+const APP_SHELL_CACHE_NAME = "quran-app-shell-v1";
+const USER_DATA_CACHE_PREFIX = "quran-offline-";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -12,7 +12,7 @@ const APP_SHELL = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
+    caches.open(APP_SHELL_CACHE_NAME).then((cache) => {
       return cache.addAll(APP_SHELL);
     })
   );
@@ -24,7 +24,11 @@ self.addEventListener("activate", (event) => {
     caches.keys().then((keys) =>
       Promise.all(
         keys
-          .filter((key) => key !== CACHE_NAME && key !== USER_DATA_CACHE_NAME)
+          .filter((key) => {
+            const isCurrentAppShell = key === APP_SHELL_CACHE_NAME;
+            const isUserDataCache = key.startsWith(USER_DATA_CACHE_PREFIX);
+            return !isCurrentAppShell && !isUserDataCache;
+          })
           .map((key) => caches.delete(key))
       )
     )
@@ -57,7 +61,7 @@ self.addEventListener("fetch", (event) => {
             if (!response || response.status !== 200) return response;
 
             const responseClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
+            caches.open(APP_SHELL_CACHE_NAME).then((cache) => {
               cache.put(event.request, responseClone);
             });
             return response;

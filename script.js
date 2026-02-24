@@ -2147,6 +2147,21 @@ function buildSurahAudioLocalUrl(reciterFolder, surahNumber) {
   return `./offline-data/audio-surah/${surahReciterFolder}/${s}.mp3`;
 }
 
+function buildSurahAudioOnlineUrl(reciterFolder, surahNumber) {
+  const s = String(surahNumber).padStart(3, "0");
+  return `https://everyayah.com/data/${reciterFolder}/${s}.mp3`;
+}
+
+function getSurahAudioCandidates(reciterFolder, surahNumber) {
+  const localUrl = buildSurahAudioLocalUrl(reciterFolder, surahNumber);
+  const onlineUrl = buildSurahAudioOnlineUrl(reciterFolder, surahNumber);
+
+  if (!navigator.onLine) return [localUrl];
+  if (state.audioSource === "local") return [localUrl, onlineUrl];
+  if (state.audioSource === "online") return [onlineUrl, localUrl];
+  return [localUrl, onlineUrl];
+}
+
 function getTimingReciterFolders(reciterFolder) {
   if (reciterFolder === "Yasser_Ad-Dussary_128kbps") {
     return ["Yasser_Ad-Dussary_128kbps", "Yasser_Ad-Dussary"];
@@ -2640,17 +2655,26 @@ async function playCurrentSurah() {
   state.listen.surahRatios = buildSurahRatios(state.listen.currentSurahNumber);
   listenStatusText.classList.add("hidden");
 
-  const src = buildSurahAudioLocalUrl(state.listen.reciter, state.listen.currentSurahNumber);
-  try {
-    await playAudioSource(src);
-    if (startAyah > 1) {
-      // Seek within surah file and keep continuous-surah mode.
-      seekSurahToAyah(state.listen.currentSurahNumber, startAyah);
-      await activePlayer.play().catch(() => {});
-      state.listen.startAyahInSurah = 1;
+  const sources = getSurahAudioCandidates(state.listen.reciter, state.listen.currentSurahNumber);
+  let started = false;
+  for (const src of sources) {
+    try {
+      await playAudioSource(src);
+      if (startAyah > 1) {
+        // Seek within surah file and keep continuous-surah mode.
+        seekSurahToAyah(state.listen.currentSurahNumber, startAyah);
+        await activePlayer.play().catch(() => {});
+        state.listen.startAyahInSurah = 1;
+      }
+      state.audioSource = src.startsWith("./offline-data/") ? "local" : "online";
+      started = true;
+      break;
+    } catch (_error) {
+      // Try next source.
     }
-    state.audioSource = "local";
-  } catch (_error) {
+  }
+
+  if (!started) {
     // Skip missing surah files automatically.
     state.listen.currentSurahNumber += 1;
     state.listen.startAyahInSurah = 1;

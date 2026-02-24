@@ -266,7 +266,7 @@ function initThemeMode() {
 function loadRecitationMode() {
   try {
     const storedMode = localStorage.getItem(RECITATION_MODE_STORAGE_KEY);
-    if (storedMode === "ayah" || storedMode === "surah") {
+    if (storedMode === "ayah") {
       return storedMode;
     }
   } catch (_error) {
@@ -288,7 +288,11 @@ function initRecitationMode() {
   state.recitationMode = initialMode;
   state.listen.playMode = initialMode;
   if (recitationModeSelect) {
-    recitationModeSelect.value = initialMode;
+    const surahModeOption = recitationModeSelect.querySelector('option[value="surah"]');
+    if (surahModeOption) {
+      surahModeOption.disabled = true;
+    }
+        recitationModeSelect.value = initialMode;
   }
   updateRecitationModeBadge();
 }
@@ -3258,8 +3262,11 @@ if (themeModeSelect) {
 if (recitationModeSelect) {
   recitationModeSelect.addEventListener("change", (event) => {
     const selectedMode = event.target.value;
-    if (selectedMode !== "ayah" && selectedMode !== "surah") return;
-
+    if (selectedMode !== "ayah") {
+      recitationModeSelect.value = "ayah";
+      return;
+    }
+    
     state.recitationMode = selectedMode;
     state.listen.playMode = selectedMode;
     saveRecitationMode(selectedMode);

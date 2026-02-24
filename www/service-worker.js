@@ -1,4 +1,4 @@
-const CACHE_NAME = "quran-offline-v4";
+const CACHE_NAME = "quran-offline-v5";
 const USER_DATA_CACHE_NAME = "quran-offline-v2";
 const APP_SHELL = [
   "./",
@@ -7,8 +7,7 @@ const APP_SHELL = [
   "./script.js",
   "./manifest.webmanifest",
   "./app-icon.svg",
-  "./assets/logo.png",
-  "./assets/OIP.webp",
+  "./app-icon.svg",
   "./assets/logo.svg",
 ];
 

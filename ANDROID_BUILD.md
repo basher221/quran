@@ -31,9 +31,10 @@ npm run cap:add:android
 ## 4) مزامنة التغييرات بعد أي تعديل
 
 ```powershell
-npm run build:web
 npm run cap:sync
 ```
+
+> ملاحظة: أمر `cap:sync` صار ينفّذ `build:web` تلقائيًا قبل المزامنة.
 
 ## 5) فتح المشروع في Android Studio
 
@@ -49,6 +50,8 @@ npm run cap:open:android
 
 ## ملاحظات مهمة
 
-- إذا غيّرت `index.html` أو `script.js` أو `styles.css` لازم تعيد:
-  `npm run build:web` ثم `npm run cap:sync`.
+- إذا غيّرت `index.html` أو `script.js` أو `styles.css` يكفي:
+  `npm run cap:sync` (يبني نسخة `www` ثم يزامنها تلقائيًا).
+- لا تحفظ بيانات توقيع الإنتاج الحقيقية داخل المستودع. استخدم `android/key.properties` محليًا أو متغيرات البيئة:
+  `QURAN_STORE_FILE`, `QURAN_STORE_PASSWORD`, `QURAN_KEY_ALIAS`, `QURAN_KEY_PASSWORD`.
 - النشر على iPhone يحتاج جهاز Mac و Xcode (غير متاح مباشرة من ويندوز).

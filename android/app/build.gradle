@@ -10,6 +10,19 @@ if (hasKeystoreProperties) {
     }
 }
 
+def readSigningValue = { envName, propertyName ->
+    def fromEnv = System.getenv(envName)
+    if (fromEnv != null && fromEnv.trim()) return fromEnv
+    if (hasKeystoreProperties) return keystoreProperties[propertyName]
+    return null
+}
+
+def releaseStoreFilePath = readSigningValue('QURAN_STORE_FILE', 'storeFile')
+def releaseStorePassword = readSigningValue('QURAN_STORE_PASSWORD', 'storePassword')
+def releaseKeyAlias = readSigningValue('QURAN_KEY_ALIAS', 'keyAlias')
+def releaseKeyPassword = readSigningValue('QURAN_KEY_PASSWORD', 'keyPassword')
+def hasReleaseSigning = releaseStoreFilePath && releaseStorePassword && releaseKeyAlias && releaseKeyPassword
+
 android {
     namespace = "com.quran.read.listen"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -28,18 +41,20 @@ android {
     }
     signingConfigs {
         release {
-            if (hasKeystoreProperties) {
-                storeFile file(keystoreProperties['storeFile'])
-                storePassword keystoreProperties['storePassword']
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPassword']
+            if (hasReleaseSigning) {
+                storeFile file(releaseStoreFilePath)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
             }
         }
     }
     buildTypes {
         release {
-            if (hasKeystoreProperties) {
+            if (hasReleaseSigning) {
                 signingConfig signingConfigs.release
+            } else {
+                logger.lifecycle("Release signing is not configured. Set QURAN_* environment variables or android/key.properties locally.")
             }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

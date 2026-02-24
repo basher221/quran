@@ -1992,7 +1992,11 @@ function renderRamadanJuz(juzNumber, savedScrollTop = 0) {
     }
     const p = document.createElement("p");
     p.className = "ayah";
-    p.innerHTML = `${ayah.text} <span class="ayah-number">(${ayah.ayahNumber})</span>`;
+    p.append(document.createTextNode(`${ayah.text} `));
+    const ayahNumber = document.createElement("span");
+    ayahNumber.className = "ayah-number";
+    ayahNumber.textContent = `(${ayah.ayahNumber})`;
+    p.appendChild(ayahNumber);
     ramadanAyahList.appendChild(p);
   }
 
@@ -2790,7 +2794,11 @@ function buildAyahElement(ayah, flatIndex) {
   const p = document.createElement("p");
   p.className = "ayah";
   p.dataset.ayahIndex = String(flatIndex);
-  p.innerHTML = `${ayah.text} <span class="ayah-number">(${ayah.numberInSurah})</span>`;
+  p.append(document.createTextNode(`${ayah.text} `));
+  const ayahNumber = document.createElement("span");
+  ayahNumber.className = "ayah-number";
+  ayahNumber.textContent = `(${ayah.numberInSurah})`;
+  p.appendChild(ayahNumber);
   return p;
 }
 

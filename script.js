@@ -266,7 +266,7 @@ function initThemeMode() {
 function loadRecitationMode() {
   try {
     const storedMode = localStorage.getItem(RECITATION_MODE_STORAGE_KEY);
-    if (storedMode === "ayah") {
+    if (storedMode === "ayah" || storedMode === "surah") {
       return storedMode;
     }
   } catch (_error) {
@@ -288,11 +288,7 @@ function initRecitationMode() {
   state.recitationMode = initialMode;
   state.listen.playMode = initialMode;
   if (recitationModeSelect) {
-    const surahModeOption = recitationModeSelect.querySelector('option[value="surah"]');
-    if (surahModeOption) {
-      surahModeOption.disabled = true;
-    }
-        recitationModeSelect.value = initialMode;
+    recitationModeSelect.value = initialMode;
   }
   updateRecitationModeBadge();
 }
@@ -2696,11 +2692,16 @@ async function playCurrentSurah() {
   }
 
   if (!started) {
-    // Skip missing surah files automatically.
-    state.listen.currentSurahNumber += 1;
-    state.listen.startAyahInSurah = 1;
+    // Fall back to ayah files when a full-surah track is unavailable.
+    state.listen.playMode = "ayah";
     state.listen.surahRatios = [];
-    await playCurrentSurah();
+    state.listen.surahTimingsMs = [];
+    state.listen.usesExactTimings = false;
+    resetPreloadState();
+    listenStatusText.classList.remove("hidden");
+    listenStatusText.textContent = "ملف السورة الكامل غير متوفر، تم التحويل مؤقتًا إلى تشغيل آية-آية.";
+    showToast("ملف السورة الكامل غير متوفر، تم التحويل إلى آية-آية.", "error");
+    await playCurrentListenAyah();
   }
 }
 
@@ -3262,8 +3263,8 @@ if (themeModeSelect) {
 if (recitationModeSelect) {
   recitationModeSelect.addEventListener("change", (event) => {
     const selectedMode = event.target.value;
-    if (selectedMode !== "ayah") {
-      recitationModeSelect.value = "ayah";
+    if (selectedMode !== "ayah" && selectedMode !== "surah") {
+      recitationModeSelect.value = state.recitationMode;
       return;
     }
     
